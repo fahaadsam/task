@@ -1,0 +1,20 @@
+    public function gennext(){
+        $post       =  $this->input->post();
+        $code= $post['pcode'];
+        $data = $this->Mdl_cost->db_select('cc_lvl', $this->_tbl_name, array (
+                'cc_costcntr_code' => $code));
+        $level = $data[0]->cc_lvl;
+        if($level==1){
+        $m = $this->Mdl_cost->db_select('max(cc_costcntr_code) as max', $this->_tbl_name, array ('cc_lvl' => $level));
+        $mcode = $m[0]->max;
+        echo json_encode($mcode);
+        }
+        else if($level==2){
+        $smcode=substr($code,0, 2);
+        $m = $this->db->query("SELECT max(cc_costcntr_code) as max FROM `$this->_tbl_name` WHERE `cc_costcntr_code` LIKE '$smcode%' AND `cc_lvl` = $level");
+        $result =  $m->result();
+        $mcode = $result[0]->max;
+        echo json_encode($mcode);
+        }
+
+    }
